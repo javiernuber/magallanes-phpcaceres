@@ -1,0 +1,28 @@
+# Prueba sin Releases con RSYNC
+deployment:
+  user: vagrant
+  from: ./
+  to: /home/vagrant/prueba1
+  excludes:
+    - app/cache/*
+    - app/logs/*
+    - app/config/parameters.yml
+    - web/uploads/*
+    - .git
+    - .gitignore
+  strategy: rsync
+hosts:
+  - 192.168.33.55
+tasks:
+  pre-deploy:
+    - composer/install
+    - composer/generate-autoload
+    - symfony2/assetic-dump
+  on-deploy:
+    - doctrine-schema-update
+    - symfony2/cache-clear: {env: prod}
+    - symfony2/cache-warmup: {env: prod}
+  post-release:
+  post-deploy:
+
+

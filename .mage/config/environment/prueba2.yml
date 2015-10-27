@@ -1,0 +1,39 @@
+# Prueba con Releases, usando TARGZ y configurando enlaces simbolicos
+deployment:
+  user: vagrant
+  from: ./
+  to: /home/vagrant/prueba2
+  excludes:
+    - app/cache/*
+    - app/logs/*
+    - app/config/parameters.yml
+    - web/uploads/*
+    - .git
+    - .gitignore
+releases:
+  enabled: true
+  max: 3
+  symlink: current
+  directory: releases
+hosts:
+  - 192.168.33.55
+tasks:
+  pre-deploy:
+    - composer/install
+    - composer/generate-autoload
+    - symfony2/assetic-dump
+  on-deploy:
+
+  post-release:
+    - filesystem/link-shared-files:
+        linked_folders:
+          - web/uploads
+        linked_files:
+          - app/config/parameters.yml
+        shared: shared
+        linking_strategy: relative
+    - doctrine-schema-update
+    - symfony2/cache-clear: {env: prod}
+    - symfony2/cache-warmup: {env: prod}
+  post-deploy:
+

@@ -1,0 +1,8 @@
+# global settings
+name: PHP Cáceres
+email: javiernuber@gmail.com
+notifications: false
+logging: true
+maxlogs: 30
+ssh_needs_tty: false
+composer_cmd: composer

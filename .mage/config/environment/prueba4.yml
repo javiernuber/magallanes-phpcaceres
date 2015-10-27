@@ -1,0 +1,35 @@
+# Prueba con Releases, usando GIT PULL y configurando enlaces simbolicos
+deployment:
+  user: vagrant
+  from: ./
+  to: /home/vagrant/prueba4
+  strategy: git-rebase
+  repository: git@bitbucket.org:javiernuber/magallanes-demo.git
+releases:
+  enabled: true
+  max: 3
+  symlink: current
+  directory: releases
+hosts:
+  - 192.168.33.55
+tasks:
+  pre-deploy:
+
+  on-deploy:
+
+  post-release:
+    - filesystem/link-shared-files:
+        linked_folders:
+          - web/uploads
+        linked_files:
+          - app/config/parameters.yml
+        shared: shared
+        linking_strategy: relative
+    - composer/install
+    - composer/generate-autoload
+    - doctrine-schema-update
+    - symfony2/assetic-dump
+    - symfony2/cache-clear: {env: prod}
+    - symfony2/cache-warmup: {env: prod}
+  post-deploy:
+

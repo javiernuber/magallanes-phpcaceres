@@ -1,0 +1,21 @@
+# Prueba sin Releases con GIT PULL
+deployment:
+  user: vagrant
+  from: ./
+  to: /home/vagrant/prueba3
+  strategy: git-rebase
+  repository: git@bitbucket.org:javiernuber/magallanes-demo.git
+hosts:
+  - 192.168.33.55
+tasks:
+  pre-deploy:
+  on-deploy:
+    - composer/install
+    - composer/generate-autoload
+    - symfony2/assetic-dump
+    - symfony2/cache-clear: {env: prod}
+    - symfony2/cache-warmup: {env: prod}
+  post-release:
+  post-deploy:
+
+
